@@ -4,18 +4,26 @@
   "private": true,
   "scripts": {
     "build": "nest build",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:prod": "node dist/main"
+    "start": "NODE_ENV=development nest start",
+    "start:dev": "NODE_ENV=development nest start --watch",
+    "start:prod": "NODE_ENV=production node dist/main",
+    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/configs/db.config.ts",
+    "migration:run": "typeorm-ts-node-commonjs migration:run -d src/configs/db.config.ts",
+    "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/configs/db.config.ts"
   },
   "dependencies": {
     "@nestjs/common": "11.0.1",
     "@nestjs/core": "11.0.1",
+    "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "11.0.1",
+    "@nestjs/typeorm": "11.0.0",
+    "@types/pg": "8.11.14",
     "discord.js": "^14.18.0",
     "dotenv": "^16.5.0",
+    "pg": "^8.11.3",
     "reflect-metadata": "0.2.2",
-    "rxjs": "7.8.1"
+    "rxjs": "7.8.1",
+    "typeorm": "0.3.17"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.2.0",
@@ -29,6 +37,8 @@
     "@types/node": "22.10.7",
     "eslint": "9.18.0",
     "eslint-config-prettier": "10.0.1",
+    "eslint-import-resolver-typescript": "^4.3.4",
+    "eslint-plugin-import": "2.31.0",
     "eslint-plugin-prettier": "5.2.2",
     "globals": "16.0.0",
     "prettier": "3.4.2",
