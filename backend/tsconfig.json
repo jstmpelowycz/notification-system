@@ -19,7 +19,7 @@
     "noFallthroughCasesInSwitch": false,
     "moduleResolution": "node",
     "paths": {
-      "@/modules/*": ["./src/modules/*"]
+      "@/*": ["./src/*"]
     }
   }
 }
