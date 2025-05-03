@@ -1,18 +1,29 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { config } from 'dotenv';
+import { DataSource, DataSourceOptions } from 'typeorm';
+
+import { User } from '@/modules/users/entities/user.entity';
 
 config();
 
-export const dbConfig: TypeOrmModuleOptions = {
+const baseConfig: DataSourceOptions = {
     type: 'postgres',
     host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT, 10),
+    port: Number(process.env.DB_PORT),
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [__dirname + '/../**/*.entity.ts'],
+    entities: [User],
     migrations: [__dirname + '/../migrations/*.ts'],
-    migrationsRun: true,
     synchronize: false,
-    retryAttempts: 1,
 };
+
+export const dbConfig: TypeOrmModuleOptions = {
+    ...baseConfig,
+    migrationsRun: true,
+};
+
+export const RootDataSource = new DataSource({
+    ...baseConfig,
+    migrationsRun: false,
+});

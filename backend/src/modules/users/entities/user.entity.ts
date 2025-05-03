@@ -14,12 +14,18 @@ export class User {
     @Column({ unique: true })
     email: string;
 
-    @Column()
+    @Column({ name: 'password_hash' })
     passwordHash: string;
 
-    @CreateDateColumn()
+    @Column({ name: 'first_name', default: '' })
+    firstName: string;
+
+    @Column({ name: 'last_name', default: '' })
+    lastName: string;
+
+    @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
 }

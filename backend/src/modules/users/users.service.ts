@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 
-import { User } from './entities/user.entity';
+import { CreateUserDto } from '@/modules/users/dto/create-user.dto';
+import { UpdateUserDto } from '@/modules/users/dto/update-user.dto';
+import { User } from '@/modules/users/entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -11,25 +14,50 @@ export class UsersService {
         private usersRepository: Repository<User>
     ) {}
 
-    async create(email: string, passwordHash: string): Promise<User> {
-        const user = this.usersRepository.create({ email, passwordHash });
+    async create(createData: CreateUserDto): Promise<User> {
+        const user = new User();
+
+        user.email = createData.email;
+        user.firstName = createData.firstName;
+        user.lastName = createData.lastName;
+
+        user.passwordHash = await bcrypt.hash(createData.password, 10);
+
         return this.usersRepository.save(user);
     }
 
-    async findOne(id: string): Promise<User | null> {
-        return this.usersRepository.findOne({ where: { id } });
+    findAll(): Promise<User[]> {
+        return this.usersRepository.find();
     }
 
-    async findByEmail(email: string): Promise<User | null> {
-        return this.usersRepository.findOne({ where: { email } });
+    findOne(id: string): Promise<User | null> {
+        return this.usersRepository.findOneBy({ id });
     }
 
-    async update(id: string, updateData: Partial<User>): Promise<User | null> {
-        await this.usersRepository.update(id, updateData);
+    findByEmail(email: string): Promise<User | null> {
+        return this.usersRepository.findOneBy({ email });
+    }
+
+    async update(id: string, updateData: UpdateUserDto): Promise<User | null> {
+        const { password, ...updates } = updateData;
+
+        if (password) {
+            (updates as Partial<User>).passwordHash = await bcrypt.hash(
+                password,
+                10
+            );
+        }
+
+        await this.usersRepository.update(id, updates);
+
         return this.findOne(id);
     }
 
     async remove(id: string): Promise<void> {
         await this.usersRepository.delete(id);
+    }
+
+    async validatePassword(user: User, password: string): Promise<boolean> {
+        return bcrypt.compare(password, user.passwordHash);
     }
 }
