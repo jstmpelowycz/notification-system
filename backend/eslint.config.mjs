@@ -65,7 +65,7 @@ export default tseslint.config(
                 ],
                 'pathGroups': [
                     {
-                        'pattern': '@/modules/**',
+                        'pattern': '@/*/**',
                         'group': 'internal',
                         'position': 'before'
                     }

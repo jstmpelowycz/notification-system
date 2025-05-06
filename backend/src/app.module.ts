@@ -1,14 +1,22 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { CONFIG_MODULE_OPTIONS } from '@/configs/config-module-options';
+import { TYPEORM_MODULE_OPTIONS } from '@/configs/typeorm-module-options';
+import { AuthModule } from '@/modules/auth/auth.module';
 import { UsersModule } from '@/modules/users/users.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { dbConfig } from './configs/db.config';
 
 @Module({
-    imports: [TypeOrmModule.forRoot(dbConfig), UsersModule],
+    imports: [
+        ConfigModule.forRoot(CONFIG_MODULE_OPTIONS),
+        TypeOrmModule.forRoot(TYPEORM_MODULE_OPTIONS),
+        UsersModule,
+        AuthModule,
+    ],
     controllers: [AppController],
     providers: [AppService],
 })

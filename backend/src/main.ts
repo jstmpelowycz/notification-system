@@ -1,20 +1,43 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { config } from 'dotenv';
+import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 
-config();
-
-const main = async () => {
+async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
-    await app.listen(process.env.PORT);
-};
+    // TODO: Must be specific per env
+    app.enableCors({
+        origin: 'http://localhost:3000',
+        credentials: true,
+    });
 
-main()
-    .then(() => {
-        console.log('Server is running 🚀', process.env.PORT);
+    app.use(cookieParser());
+
+    app.useGlobalPipes(
+        new ValidationPipe({
+            whitelist: true,
+            transform: true,
+        })
+    );
+
+    const port = process.env.PORT;
+
+    if (!port) {
+        throw new Error('Port cannot be unset!');
+    }
+
+    await app.listen(port);
+
+    return port;
+}
+
+bootstrap()
+    .then(port => {
+        console.log(`Server running on port ${port} 🚀`);
     })
-    .catch(() => {
-        console.log('Server failed to launch 💀');
+    .catch(err => {
+        console.error('Error starting server:', err);
+        process.exit(1);
     });
