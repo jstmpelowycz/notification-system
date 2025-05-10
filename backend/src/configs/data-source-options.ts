@@ -2,8 +2,7 @@ import { join } from 'path';
 
 import { DataSource, DataSourceOptions } from 'typeorm';
 
-// Note: Intentional non-alias import for CLI
-import { User } from '../modules/users/entities/user.entity';
+import entities from '../entities';
 
 export const DATA_SOURCE_OPTIONS: DataSourceOptions = {
     type: 'postgres',
@@ -12,9 +11,9 @@ export const DATA_SOURCE_OPTIONS: DataSourceOptions = {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [User],
     migrations: [join(__dirname, '..', 'migrations', '*.{ts,js}')],
     synchronize: false,
+    entities,
 };
 
 export default new DataSource(DATA_SOURCE_OPTIONS);

@@ -2,12 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 
+import { ApiToken } from '@/entities/api-token.entity';
 import { CreateApiTokenRequestDto, CreateApiTokenResponseDto } from '@/modules/api-tokens/dto/create-api-token.dto';
 import { createPlainTextToken } from '@/modules/api-tokens/utils/create-plain-text-token';
 import { createRandomToken } from '@/modules/api-tokens/utils/create-random-token';
 
 import { API_TOKENS_ERROR_MESSAGES } from './constants/error-messages';
-import { ApiToken } from './entities/api-token.entity';
 
 @Injectable()
 export class ApiTokensService {

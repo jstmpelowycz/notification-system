@@ -1,4 +1,4 @@
-import { ApiToken } from '@/modules/api-tokens/entities/api-token.entity';
+import { ApiToken } from '@/entities/api-token.entity';
 
 export class CreateApiTokenRequestDto {
     description?: string;

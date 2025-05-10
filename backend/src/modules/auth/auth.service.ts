@@ -3,10 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import { CONFIG_KEYS } from '@/constants/config-keys';
+import { User } from '@/entities/user.entity';
 import { AUTH_ERROR_MESSAGES } from '@/modules/auth/constants/error-messages';
 import { LoginUserRequestDto } from '@/modules/auth/dto/login-user.dto';
 import { CreateUserRequestDto, CreateUserResponseDto } from '@/modules/users/dto/create-user.dto';
-import { User } from '@/modules/users/entities/user.entity';
 import { UsersService } from '@/modules/users/users.service';
 
 @Injectable()

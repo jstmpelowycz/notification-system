@@ -1,10 +1,10 @@
 import { Controller, Post, Get, Delete, Body, Param, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
 
+import { ApiToken } from '@/entities/api-token.entity';
 import { CreateApiTokenRequestDto, CreateApiTokenResponseDto } from '@/modules/api-tokens/dto/create-api-token.dto';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 
 import { ApiTokensService } from './api-tokens.service';
-import { ApiToken } from './entities/api-token.entity';
 
 @Controller('api-tokens')
 @UseGuards(JwtAuthGuard)
