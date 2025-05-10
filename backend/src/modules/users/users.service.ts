@@ -3,8 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 
-import { CreateUserDto } from '@/modules/users/dto/create-user.dto';
+import { CreateUserRequestDto } from '@/modules/users/dto/create-user.dto';
 import { User } from '@/modules/users/entities/user.entity';
+import { createPasswordHash } from '@/modules/users/utils/create-password-hash';
 
 @Injectable()
 export class UsersService {
@@ -13,27 +14,26 @@ export class UsersService {
         private usersRepository: Repository<User>
     ) {}
 
-    async create(createData: CreateUserDto): Promise<User> {
+    async create(dto: CreateUserRequestDto): Promise<User> {
         const user = new User();
 
-        user.email = createData.email;
-        user.firstName = createData.firstName;
-        user.lastName = createData.lastName;
-
-        user.passwordHash = await bcrypt.hash(createData.password, 10);
+        user.email = dto.email;
+        user.firstName = dto.firstName;
+        user.lastName = dto.lastName;
+        user.passwordHash = await createPasswordHash(dto.password);
 
         return this.usersRepository.save(user);
     }
 
-    findAll(): Promise<User[]> {
+    async findAll(): Promise<User[]> {
         return this.usersRepository.find();
     }
 
-    findOne(id: string): Promise<User | null> {
+    async findById(id: string): Promise<User | null> {
         return this.usersRepository.findOneBy({ id });
     }
 
-    findByEmail(email: string): Promise<User | null> {
+    async findByEmail(email: string): Promise<User | null> {
         return this.usersRepository.findOneBy({ email });
     }
 

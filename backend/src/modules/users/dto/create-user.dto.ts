@@ -1,6 +1,8 @@
 import { IsEmail, IsString } from 'class-validator';
 
-export class CreateUserDto {
+import { UserResponseDto } from '@/modules/users/dto/user.dto';
+
+export class CreateUserRequestDto {
     @IsEmail()
     email: string;
 
@@ -12,4 +14,8 @@ export class CreateUserDto {
 
     @IsString()
     lastName: string;
+}
+
+export class CreateUserResponseDto extends UserResponseDto {
+    accessToken: string;
 }
