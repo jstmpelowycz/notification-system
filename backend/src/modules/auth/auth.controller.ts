@@ -22,6 +22,8 @@ export class AuthController {
 
         response.cookie(COOKIE_KEYS.JWT, accessToken, JWT_RESPONSE_COOKIE_OPTIONS);
 
+        console.log('Token:', accessToken);
+
         const responseDto = new CreateUserResponseDto();
 
         responseDto.user = user;
@@ -41,12 +43,16 @@ export class AuthController {
 
         response.cookie(COOKIE_KEYS.JWT, accessToken, JWT_RESPONSE_COOKIE_OPTIONS);
 
+        console.log('Token:', accessToken);
+
         const responseDto = new LoginUserResponseDto();
 
-        responseDto.user.id = user.id;
-        responseDto.user.email = user.email;
-        responseDto.user.firstName = user.firstName;
-        responseDto.user.lastName = user.lastName;
+        responseDto.user = {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+        };
 
         return responseDto;
     }

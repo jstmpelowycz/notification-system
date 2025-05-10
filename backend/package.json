@@ -7,9 +7,9 @@
     "start": "NODE_ENV=development nest start",
     "start:dev": "NODE_ENV=development nest start --watch",
     "start:prod": "NODE_ENV=production node dist/main",
-    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d typeorm.config.ts",
-    "migration:run": "typeorm-ts-node-commonjs migration:run -d typeorm.config.ts",
-    "migration:revert": "typeorm-ts-node-commonjs migration:revert -d typeorm.config.ts"
+    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d ./src/configs/data-source-options.ts",
+    "migration:run": "typeorm-ts-node-commonjs migration:run -d ./src/configs/data-source-options.ts",
+    "migration:revert": "typeorm-ts-node-commonjs migration:revert -d ./src/configs/data-source-options.ts"
   },
   "engines": {
     "node": "22.15.0"

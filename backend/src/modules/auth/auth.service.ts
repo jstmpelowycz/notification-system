@@ -30,10 +30,13 @@ export class AuthService {
 
         const dto = new CreateUserResponseDto();
 
-        dto.user.id = user.id;
-        dto.user.email = user.email;
-        dto.user.firstName = user.firstName;
-        dto.user.lastName = user.lastName;
+        dto.user = {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+        };
+
         dto.accessToken = accessToken;
 
         return dto;
