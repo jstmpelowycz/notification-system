@@ -1,6 +1,8 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
-export class LoginDto {
+import { UserResponseDto } from '@/modules/users/dto/user.dto';
+
+export class LoginUserRequestDto {
     @IsEmail()
     @IsNotEmpty()
     email: string;
@@ -10,3 +12,5 @@ export class LoginDto {
     @MinLength(6)
     password: string;
 }
+
+export class LoginUserResponseDto extends UserResponseDto {}
