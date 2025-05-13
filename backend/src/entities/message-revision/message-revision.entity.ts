@@ -15,7 +15,7 @@ export enum MessageRevisionStatus {
 @Entity('message_revisions')
 @Unique(['messageId', 'displayId'])
 export class MessageRevision extends BaseEntity {
-    @Column({ name: 'display_id' })
+    @Column({ type: 'integer', name: 'display_id' })
     displayId: number;
 
     @Column({
@@ -25,7 +25,7 @@ export class MessageRevision extends BaseEntity {
     })
     status: MessageRevisionStatus;
 
-    @Column({ name: 'message_id', type: 'uuid' })
+    @Column({ type: 'uuid', name: 'message_id' })
     messageId: string;
 
     @ManyToOne(() => Message, message => message.revisions)
@@ -35,7 +35,7 @@ export class MessageRevision extends BaseEntity {
     @OneToOne(() => MessageContent, content => content.revision)
     content: MessageContent;
 
-    @DeleteDateColumn({ name: 'deleted_at' })
+    @DeleteDateColumn({ type: 'timestamptz', name: 'deleted_at' })
     deletedAt: Date | null;
 
     @BeforeInsert()

@@ -6,13 +6,13 @@ import { NotificationChannel } from '@/entities/notification-channel';
 
 @Entity('messages')
 export class Message extends BaseEntity {
-    @Column({ unique: true })
+    @Column({ type: 'varchar', unique: true })
     slug: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'text', nullable: true })
     description: string | null;
 
-    @Column({ name: 'current_revision_id', type: 'uuid' })
+    @Column({ type: 'uuid', name: 'current_revision_id' })
     currentRevisionId: string;
 
     @OneToOne(() => MessageRevision)

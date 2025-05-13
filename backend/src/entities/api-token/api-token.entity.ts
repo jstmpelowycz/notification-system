@@ -4,15 +4,19 @@ import { BaseEntity } from '@/entities/base.entity';
 
 @Entity('api_tokens')
 export class ApiToken extends BaseEntity {
-    @Column({ unique: true })
+    @Column({ type: 'varchar', unique: true })
     hash: string;
 
-    @Column({ unique: true })
+    @Column({ type: 'varchar', unique: true })
     prefix: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'text', nullable: true })
     description: string | null;
 
-    @Column({ name: 'revoked_at', nullable: true })
+    @Column({
+        type: 'timestamptz',
+        name: 'revoked_at',
+        nullable: true,
+    })
     revokedAt: Date | null;
 }

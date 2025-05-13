@@ -6,8 +6,8 @@ import { MessageRevision } from '@/entities/message-revision';
 @Entity('message_contents')
 export class MessageContent extends BaseEntity {
     @Column({
-        name: 'revision_id',
         type: 'uuid',
+        name: 'revision_id',
         unique: true,
     })
     revisionId: string;
@@ -16,6 +16,6 @@ export class MessageContent extends BaseEntity {
     @JoinColumn({ name: 'revision_id' })
     revision: MessageRevision;
 
-    @Column()
+    @Column({ type: 'text' })
     content: string;
 }

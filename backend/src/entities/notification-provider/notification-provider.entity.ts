@@ -9,16 +9,16 @@ export enum NotificationProviderIntegrationType {
 
 @Entity('notification_providers')
 export class NotificationProvider extends BaseEntity {
-    @Column({ unique: true })
+    @Column({ type: 'varchar', unique: true })
     name: string;
 
-    @Column({ name: 'display_name' })
+    @Column({ type: 'varchar', name: 'display_name' })
     displayName: string;
 
     @Column({
-        name: 'integration_type',
         type: 'enum',
         enum: NotificationProviderIntegrationType,
+        name: 'integration_type',
     })
     integrationType: NotificationProviderIntegrationType;
 

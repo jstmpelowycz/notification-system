@@ -4,15 +4,15 @@ import { BaseEntity } from '@/entities/base.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
-    @Column({ unique: true })
+    @Column({ type: 'varchar', unique: true })
     email: string;
 
-    @Column({ name: 'password_hash' })
+    @Column({ type: 'varchar', name: 'password_hash' })
     passwordHash: string;
 
-    @Column({ name: 'first_name' })
+    @Column({ type: 'varchar', name: 'first_name' })
     firstName: string;
 
-    @Column({ name: 'last_name' })
+    @Column({ type: 'varchar', name: 'last_name' })
     lastName: string;
 }

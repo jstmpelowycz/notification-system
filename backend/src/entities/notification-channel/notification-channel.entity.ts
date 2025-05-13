@@ -26,7 +26,7 @@ export class NotificationChannel extends BaseEntity {
     @Column({ type: 'jsonb' })
     config: Record<string, unknown>;
 
-    @Column({ name: 'provider_id', type: 'uuid' })
+    @Column({ type: 'uuid', name: 'provider_id' })
     providerId: string;
 
     @ManyToOne(() => NotificationProvider, provider => provider.channels)
