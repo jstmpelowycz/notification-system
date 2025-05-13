@@ -13,7 +13,7 @@ import { API_TOKENS_ERROR_MESSAGES } from './constants/error-messages';
 export class ApiTokensService {
     constructor(
         @InjectRepository(ApiToken)
-        private apiTokensRepository: Repository<ApiToken>
+        private readonly apiTokensRepository: Repository<ApiToken>
     ) {}
 
     async create(requestDto: CreateApiTokenRequestDto): Promise<CreateApiTokenResponseDto> {

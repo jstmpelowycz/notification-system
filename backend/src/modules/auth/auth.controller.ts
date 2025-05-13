@@ -22,8 +22,6 @@ export class AuthController {
 
         response.cookie(COOKIE_KEYS.JWT, accessToken, JWT_RESPONSE_COOKIE_OPTIONS);
 
-        console.log('Token:', accessToken);
-
         const responseDto = new CreateUserResponseDto();
 
         responseDto.user = user;
@@ -42,8 +40,6 @@ export class AuthController {
         const { accessToken } = this.authService.login(user);
 
         response.cookie(COOKIE_KEYS.JWT, accessToken, JWT_RESPONSE_COOKIE_OPTIONS);
-
-        console.log('Token:', accessToken);
 
         const responseDto = new LoginUserResponseDto();
 

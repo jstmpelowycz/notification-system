@@ -12,9 +12,9 @@ import { UsersService } from '@/modules/users/users.service';
 @Injectable()
 export class AuthService {
     constructor(
-        private usersService: UsersService,
-        private jwtService: JwtService,
-        private configService: ConfigService
+        private readonly usersService: UsersService,
+        private readonly jwtService: JwtService,
+        private readonly configService: ConfigService
     ) {}
 
     login(user: User): CreateUserResponseDto {

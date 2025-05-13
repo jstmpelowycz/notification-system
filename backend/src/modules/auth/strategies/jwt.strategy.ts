@@ -18,7 +18,7 @@ interface Result {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(private configService: ConfigService) {
+    constructor(private readonly configService: ConfigService) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([getJwtCookieFromRequest]),
             secretOrKey: configService.get<string>(CONFIG_KEYS.JWT_SECRET)!,
