@@ -4,6 +4,11 @@ import { BaseEntity } from '@/entities/base.entity';
 import { MessageRevision } from '@/entities/message-revision';
 import { NotificationChannel } from '@/entities/notification-channel';
 
+export enum MessageStatus {
+    ACTIVE = 'active',
+    INACTIVE = 'inactive',
+}
+
 @Entity('messages')
 export class Message extends BaseEntity {
     @Column({ type: 'varchar', unique: true })
@@ -11,6 +16,13 @@ export class Message extends BaseEntity {
 
     @Column({ type: 'text', nullable: true })
     description: string | null;
+
+    @Column({
+        type: 'enum',
+        enum: MessageStatus,
+        default: MessageStatus.INACTIVE,
+    })
+    status: MessageStatus;
 
     @Column({ type: 'uuid', name: 'current_revision_id' })
     currentRevisionId: string;

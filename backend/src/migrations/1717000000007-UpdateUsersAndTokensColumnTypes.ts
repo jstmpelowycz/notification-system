@@ -2,7 +2,6 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class UpdateUsersAndTokensColumnTypes1717000000007 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
-        // Update users table column types
         await queryRunner.query(`
             ALTER TABLE "users"
             ALTER COLUMN "email" TYPE varchar(255),
@@ -12,7 +11,6 @@ export class UpdateUsersAndTokensColumnTypes1717000000007 implements MigrationIn
             ALTER COLUMN "created_at" TYPE timestamp with time zone;
         `);
 
-        // Update api_tokens table column types
         await queryRunner.query(`
             ALTER TABLE "api_tokens"
             ALTER COLUMN "hash" TYPE varchar(255),
@@ -24,7 +22,6 @@ export class UpdateUsersAndTokensColumnTypes1717000000007 implements MigrationIn
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        // Revert api_tokens table column types
         await queryRunner.query(`
             ALTER TABLE "api_tokens"
             ALTER COLUMN "hash" TYPE varchar,
@@ -34,7 +31,6 @@ export class UpdateUsersAndTokensColumnTypes1717000000007 implements MigrationIn
             ALTER COLUMN "revoked_at" TYPE timestamp;
         `);
 
-        // Revert users table column types
         await queryRunner.query(`
             ALTER TABLE "users"
             ALTER COLUMN "email" TYPE varchar,
