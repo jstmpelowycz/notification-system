@@ -6,6 +6,7 @@ import { CONFIG_MODULE_OPTIONS } from '@/configs/config-module-options';
 import { TYPEORM_MODULE_OPTIONS } from '@/configs/typeorm-module-options';
 import { ApiTokensModule } from '@/modules/api-tokens/api-tokens.module';
 import { AuthModule } from '@/modules/auth/auth.module';
+import { NotificationChannelsModule } from '@/modules/notification-channels/notification-channels.module';
 import { NotificationProvidersModule } from '@/modules/notification-providers/notification-providers.module';
 import { UsersModule } from '@/modules/users/users.module';
 
@@ -20,6 +21,7 @@ import { AppService } from './app.service';
         AuthModule,
         UsersModule,
         NotificationProvidersModule,
+        NotificationChannelsModule,
     ],
     controllers: [AppController],
     providers: [AppService],

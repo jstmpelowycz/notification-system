@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 
-import { NotificationProvider } from '@/entities/notification-provider';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
+import { FindAllProvidersResponseDto } from '@/modules/notification-providers/dto/find-all-providers.dto';
 import { NotificationProvidersService } from '@/modules/notification-providers/notification-providers.service';
 
 @Controller('notification-providers')
@@ -11,7 +11,9 @@ export class NotificationProvidersController {
 
     @Get()
     @HttpCode(HttpStatus.OK)
-    async findAll(): Promise<NotificationProvider[]> {
-        return this.notificationProvidersService.findAll();
+    async findAll(): Promise<FindAllProvidersResponseDto> {
+        const providers = await this.notificationProvidersService.findAll();
+
+        return { providers };
     }
 }

@@ -3,7 +3,7 @@ interface NotificationChannelConfigValidationRule {
     errorMessage: string;
 }
 
-export const WEBHOOK_PROVIDER_INTEGRATION_TYPE_CVR: NotificationChannelConfigValidationRule = {
-    validate: config => 'webhook_url' in config,
-    errorMessage: 'Config must be defined with "webhook_url"',
+export const WEBHOOK_PROVIDER_INTEGRATION_TYPE_CONFIG_VALIDATION_RULE: NotificationChannelConfigValidationRule = {
+    validate: config => 'webhookUrl' in config,
+    errorMessage: 'Config must be defined with "webhookUrl"',
 };

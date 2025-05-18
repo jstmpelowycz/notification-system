@@ -2,13 +2,13 @@ import { IsOptional, IsString } from 'class-validator';
 
 import { ApiToken } from '@/entities/api-token';
 
-export class CreateApiTokenRequestDto {
+export class CreateTokenRequestDto {
     @IsString()
     @IsOptional()
     description?: string;
 }
 
-export class CreateApiTokenResponseDto {
+export class CreateTokenResponseDto {
     plainTextToken: string;
-    apiToken: ApiToken;
+    token: ApiToken;
 }

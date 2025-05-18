@@ -1,10 +1,10 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToMany, ManyToOne } from 'typeorm';
+import { BeforeInsert, Column, Entity, JoinColumn, ManyToMany, ManyToOne } from 'typeorm';
 
 import { BaseEntity } from '@/entities/base.entity';
 import { Message } from '@/entities/message';
 import { NotificationProvider, NotificationProviderIntegrationType } from '@/entities/notification-provider';
 
-import { WEBHOOK_PROVIDER_INTEGRATION_TYPE_CVR } from './validation/config-validation-rule';
+import { WEBHOOK_PROVIDER_INTEGRATION_TYPE_CONFIG_VALIDATION_RULE } from './validation/config-validation-rule';
 
 export enum NotificationChannelStatus {
     INACTIVE = 'inactive',
@@ -37,12 +37,11 @@ export class NotificationChannel extends BaseEntity {
     messages: Message[];
 
     @BeforeInsert()
-    @BeforeUpdate()
     validateConfig() {
         switch (this.provider.integrationType) {
             case NotificationProviderIntegrationType.WEBHOOK:
-                if (!WEBHOOK_PROVIDER_INTEGRATION_TYPE_CVR.validate(this.config)) {
-                    throw new Error(WEBHOOK_PROVIDER_INTEGRATION_TYPE_CVR.errorMessage);
+                if (!WEBHOOK_PROVIDER_INTEGRATION_TYPE_CONFIG_VALIDATION_RULE.validate(this.config)) {
+                    throw new Error(WEBHOOK_PROVIDER_INTEGRATION_TYPE_CONFIG_VALIDATION_RULE.errorMessage);
                 }
         }
     }

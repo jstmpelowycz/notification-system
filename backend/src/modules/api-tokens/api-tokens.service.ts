@@ -3,11 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 
 import { ApiToken } from '@/entities/api-token';
-import { CreateApiTokenRequestDto, CreateApiTokenResponseDto } from '@/modules/api-tokens/dto/create-api-token.dto';
-import { createPlainTextToken } from '@/modules/api-tokens/utils/create-plain-text-token';
-import { createRandomToken } from '@/modules/api-tokens/utils/create-random-token';
 
 import { API_TOKENS_ERROR_MESSAGES } from './constants/error-messages';
+import { CreateTokenRequestDto, CreateTokenResponseDto } from './dto/create-token.dto';
+import { createPlainTextToken } from './utils/create-plain-text-token';
+import { createRandomToken } from './utils/create-random-token';
 
 @Injectable()
 export class ApiTokensService {
@@ -16,7 +16,7 @@ export class ApiTokensService {
         private readonly apiTokensRepository: Repository<ApiToken>
     ) {}
 
-    async create(requestDto: CreateApiTokenRequestDto): Promise<CreateApiTokenResponseDto> {
+    async create(requestDto: CreateTokenRequestDto): Promise<CreateTokenResponseDto> {
         const { prefix, token, hash } = createRandomToken();
 
         const apiToken = this.apiTokensRepository.create({
@@ -27,10 +27,10 @@ export class ApiTokensService {
 
         await this.apiTokensRepository.save(apiToken);
 
-        const responseDto = new CreateApiTokenResponseDto();
+        const responseDto = new CreateTokenResponseDto();
 
         responseDto.plainTextToken = createPlainTextToken(prefix, token);
-        responseDto.apiToken = apiToken;
+        responseDto.token = apiToken;
 
         return responseDto;
     }

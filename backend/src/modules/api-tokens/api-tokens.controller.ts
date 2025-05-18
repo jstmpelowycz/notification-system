@@ -12,10 +12,13 @@ import {
 } from '@nestjs/common';
 
 import { ApiToken } from '@/entities/api-token';
-import { CreateApiTokenRequestDto, CreateApiTokenResponseDto } from '@/modules/api-tokens/dto/create-api-token.dto';
+import { ApiTokensService } from '@/modules/api-tokens/api-tokens.service';
+import { CreateTokenRequestDto, CreateTokenResponseDto } from '@/modules/api-tokens/dto/create-token.dto';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 
-import { ApiTokensService } from './api-tokens.service';
+export class FindAllTokensResponseDto {
+    tokens: ApiToken[];
+}
 
 @Controller('api-tokens')
 @UseGuards(JwtAuthGuard)
@@ -24,14 +27,16 @@ export class ApiTokensController {
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
-    async create(@Body() dto: CreateApiTokenRequestDto): Promise<CreateApiTokenResponseDto> {
+    async create(@Body() dto: CreateTokenRequestDto): Promise<CreateTokenResponseDto> {
         return this.apiTokensService.create(dto);
     }
 
     @Get()
     @HttpCode(HttpStatus.OK)
-    async findAll(): Promise<ApiToken[]> {
-        return this.apiTokensService.findAll();
+    async findAll(): Promise<FindAllTokensResponseDto> {
+        const tokens = await this.apiTokensService.findAll();
+
+        return { tokens };
     }
 
     @Delete(':id')

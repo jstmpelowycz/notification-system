@@ -2,10 +2,10 @@ import { Body, Controller, HttpCode, HttpStatus, Post, Res } from '@nestjs/commo
 import { Response } from 'express';
 
 import { COOKIE_KEYS } from '@/constants/cookie-keys';
-import { JWT_RESPONSE_COOKIE_OPTIONS } from '@/modules/auth/constants/jwt-cookie-options';
 import { CreateUserRequestDto, CreateUserResponseDto } from '@/modules/users/dto/create-user.dto';
 
 import { AuthService } from './auth.service';
+import { JWT_RESPONSE_COOKIE_OPTIONS } from './constants/jwt-cookie-options';
 import { LoginUserRequestDto, LoginUserResponseDto } from './dto/login-user.dto';
 
 @Controller('auth')
