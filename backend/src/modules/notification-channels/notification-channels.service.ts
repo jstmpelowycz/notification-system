@@ -30,24 +30,24 @@ export class NotificationChannelsService {
         });
     }
 
-    async create(createChannelDto: CreateChannelRequestDto): Promise<NotificationChannel> {
-        const provider = await this.notificationProviderService.getById(createChannelDto.providerId);
+    async create(dto: CreateChannelRequestDto): Promise<NotificationChannel> {
+        const provider = await this.notificationProviderService.getById(dto.providerId);
 
         if (provider.integrationType === NotificationProviderIntegrationType.WEBHOOK) {
-            if (!createChannelDto.config.webhookUrl) {
+            if (!dto.config.webhookUrl) {
                 throw new Error(NOTIFICATION_CHANNEL_ERROR_MESSAGES.WEBHOOK_URL_REQUIRED);
             }
         }
 
         const channel = this.notificationChannelRepository.create({
-            ...createChannelDto,
+            ...dto,
             provider,
         });
 
         return this.notificationChannelRepository.save(channel);
     }
 
-    async update(id: string, updateChannelDto: UpdateChannelRequestDto): Promise<NotificationChannel> {
+    async update(id: string, dto: UpdateChannelRequestDto): Promise<NotificationChannel> {
         const channel = await this.notificationChannelRepository.findOne({
             where: { id },
             relations: ['provider'],
@@ -58,14 +58,14 @@ export class NotificationChannelsService {
         }
 
         if (
-            updateChannelDto.config &&
+            dto.config &&
             channel.provider.integrationType === NotificationProviderIntegrationType.WEBHOOK &&
-            !updateChannelDto.config.webhookUrl
+            !dto.config.webhookUrl
         ) {
             throw new Error(NOTIFICATION_CHANNEL_ERROR_MESSAGES.WEBHOOK_URL_REQUIRED);
         }
 
-        Object.assign(channel, updateChannelDto);
+        Object.assign(channel, dto);
 
         return this.notificationChannelRepository.save(channel);
     }

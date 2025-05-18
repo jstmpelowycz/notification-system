@@ -1,14 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-import { MessageRevisionStatus } from '@/entities/message-revision';
-
 export class CreateMessageRevisionsTable1717000000002 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(
-            `CREATE TYPE "message_revision_status_enum" AS ENUM(${Object.values(MessageRevisionStatus)
-                .map(status => `'${status}'`)
-                .join(', ')})`
-        );
+        await queryRunner.query(`
+            CREATE TYPE "message_revision_status_enum" AS ENUM('active', 'locked')
+        `);
 
         await queryRunner.createTable(
             new Table({
@@ -28,7 +24,6 @@ export class CreateMessageRevisionsTable1717000000002 implements MigrationInterf
                     {
                         name: 'status',
                         type: 'message_revision_status_enum',
-                        default: `'${MessageRevisionStatus.DRAFT}'`,
                     },
                     {
                         name: 'message_id',

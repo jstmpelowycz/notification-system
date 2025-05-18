@@ -42,14 +42,14 @@ export class AuthService {
         return dto;
     }
 
-    async register(createUserDto: CreateUserRequestDto): Promise<CreateUserResponseDto> {
-        const existingUser = await this.usersService.findByEmail(createUserDto.email);
+    async register(dto: CreateUserRequestDto): Promise<CreateUserResponseDto> {
+        const existingUser = await this.usersService.findByEmail(dto.email);
 
         if (existingUser) {
             throw new BadRequestException(AUTH_ERROR_MESSAGES.ALREADY_EXISTS);
         }
 
-        const newUser = await this.usersService.create(createUserDto);
+        const newUser = await this.usersService.create(dto);
 
         return this.login(newUser);
     }

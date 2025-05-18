@@ -1,4 +1,4 @@
-test/*
+__test__/*
 dist
 node_modules
 .env

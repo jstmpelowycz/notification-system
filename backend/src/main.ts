@@ -2,6 +2,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 
+import dataSource from '@/db/data-source';
+
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -21,6 +23,8 @@ async function bootstrap() {
             transform: true,
         })
     );
+
+    await dataSource.initialize();
 
     const port = process.env.PORT;
 

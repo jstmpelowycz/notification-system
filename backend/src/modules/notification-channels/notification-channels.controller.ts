@@ -25,8 +25,8 @@ export class NotificationChannelsController {
     }
 
     @Post()
-    async create(@Body() createChannelDto: CreateChannelRequestDto): Promise<CreateChannelResponseDto> {
-        const channel = await this.notificationChannelsService.create(createChannelDto);
+    async create(@Body() dto: CreateChannelRequestDto): Promise<CreateChannelResponseDto> {
+        const channel = await this.notificationChannelsService.create(dto);
 
         return { channel };
     }
@@ -34,9 +34,9 @@ export class NotificationChannelsController {
     @Patch(':id')
     async update(
         @Param('id', ParseUUIDPipe) id: string,
-        @Body() updateChannelDto: UpdateChannelRequestDto
+        @Body() dto: UpdateChannelRequestDto
     ): Promise<UpdateChannelResponseDto> {
-        const channel = await this.notificationChannelsService.update(id, updateChannelDto);
+        const channel = await this.notificationChannelsService.update(id, dto);
 
         return { channel };
     }

@@ -7,9 +7,8 @@ import { MessageContent } from '@/entities/message-content';
 import { generateDisplayId } from './generators/generate-display-id';
 
 export enum MessageRevisionStatus {
-    DRAFT = 'draft',
-    PUBLISHED = 'published',
     LOCKED = 'locked',
+    ACTIVE = 'active',
 }
 
 @Entity('message_revisions')
@@ -21,7 +20,6 @@ export class MessageRevision extends BaseEntity {
     @Column({
         type: 'enum',
         enum: MessageRevisionStatus,
-        default: MessageRevisionStatus.DRAFT,
     })
     status: MessageRevisionStatus;
 
