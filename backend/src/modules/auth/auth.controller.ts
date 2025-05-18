@@ -12,9 +12,9 @@ import { LoginUserRequestDto, LoginUserResponseDto } from './dto/login-user.dto'
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    @Post('create')
+    @Post('register')
     @HttpCode(HttpStatus.CREATED)
-    async create(
+    async register(
         @Body() requestDto: CreateUserRequestDto,
         @Res({ passthrough: true }) response: Response
     ): Promise<CreateUserResponseDto> {

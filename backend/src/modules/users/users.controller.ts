@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, HttpCode, HttpStatus, ParseUUIDPipe } from '@nestjs/common';
 
 import { User } from '@/entities/user';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
@@ -25,7 +25,7 @@ export class UsersController {
 
     @Get(':id')
     @HttpCode(HttpStatus.OK)
-    async findById(@Param('id') id: string): Promise<User | null> {
+    async findById(@Param('id', ParseUUIDPipe) id: string): Promise<User | null> {
         return this.usersService.findById(id);
     }
 }

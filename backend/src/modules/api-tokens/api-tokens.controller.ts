@@ -1,4 +1,15 @@
-import { Controller, Post, Get, Delete, Body, Param, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+    Controller,
+    Post,
+    Get,
+    Delete,
+    Body,
+    Param,
+    UseGuards,
+    HttpCode,
+    HttpStatus,
+    ParseUUIDPipe,
+} from '@nestjs/common';
 
 import { ApiToken } from '@/entities/api-token';
 import { CreateApiTokenRequestDto, CreateApiTokenResponseDto } from '@/modules/api-tokens/dto/create-api-token.dto';
@@ -25,7 +36,7 @@ export class ApiTokensController {
 
     @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
-    async revoke(@Param('id') id: string): Promise<void> {
+    async revoke(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
         await this.apiTokensService.revoke(id);
     }
 }
