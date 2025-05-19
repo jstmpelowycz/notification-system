@@ -15,7 +15,7 @@ export class NotificationProvidersService {
     async findAll(): Promise<NotificationProvider[]> {
         return this.notificationProvidersRepository.find({
             order: {
-                name: 'desc',
+                type: 'desc',
             },
         });
     }

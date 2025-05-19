@@ -1,1 +1,5 @@
-export { NotificationProvider, NotificationProviderIntegrationType } from './notification-provider.entity';
+export {
+    NotificationProvider,
+    NotificationProviderType,
+    NotificationProviderIntegrationType,
+} from './notification-provider.entity';

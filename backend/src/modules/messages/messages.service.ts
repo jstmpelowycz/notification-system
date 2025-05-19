@@ -12,6 +12,10 @@ import { FindByQueryMessagesRequestDto } from './dto/find-all-messages.dto';
 import { ManageRevisionRequestDto } from './dto/manage-revision.dto';
 import { UpdateMessageRequestDto } from './dto/update-message.dto';
 
+interface GetMessageOptions {
+    status?: MessageStatus;
+}
+
 @Injectable()
 export class MessagesService {
     constructor(
@@ -37,10 +41,15 @@ export class MessagesService {
         });
     }
 
-    async getById(id: string): Promise<Message> {
+    async getById(id: string, options?: GetMessageOptions): Promise<Message> {
         const message = await this.messagesRepository.findOne({
-            where: { id },
-            relations: ['currentRevision', 'channels', 'currentRevision.content'],
+            where: {
+                id,
+                ...(options?.status && {
+                    status: options.status,
+                }),
+            },
+            relations: ['currentRevision', 'channels', 'currentRevision.content', 'channels.provider'],
         });
 
         if (!message) {
