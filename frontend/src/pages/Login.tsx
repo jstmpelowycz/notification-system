@@ -8,8 +8,7 @@ import {
     Paper,
     Alert,
 } from '@mui/material';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect , useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 
 import { authService, LoginRequest } from '../services/auth.service';
@@ -41,8 +40,8 @@ export default function Login() {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
         setError('');
         setLoading(true);
 
@@ -55,8 +54,8 @@ export default function Login() {
                 type: 'success',
             });
             navigate('/', { replace: true });
-        } catch (err: any) {
-            setError(err?.response?.data?.message || 'Login failed. Please check your credentials.');
+        } catch (error: unknown) {
+            setError(error instanceof Error ? error.message : 'Failed to login');
             addNotification({
                 title: 'Error',
                 message: 'Login failed. Please check your credentials.',

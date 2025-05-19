@@ -1,3 +1,4 @@
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {
     Dialog,
     DialogTitle,
@@ -10,7 +11,6 @@ import {
     IconButton,
     Tooltip,
 } from '@mui/material';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useState } from 'react';
 
 import { apiTokensService } from '@/services/api-tokens.service';
@@ -42,11 +42,12 @@ export default function CreateApiTokenModal({ open, onClose, onSuccess }: Create
                 message: 'API token created successfully',
                 type: 'success',
             });
-        } catch (err: any) {
-            setError(err?.response?.data?.message || 'Failed to create API token');
+            onSuccess();
+        } catch (error: unknown) {
+            setError(error instanceof Error ? error.message : 'Failed to create API token');
             addNotification({
                 title: 'Error',
-                message: 'Failed to create API token',
+                message: error instanceof Error ? error.message : 'Failed to create API token',
                 type: 'error',
             });
         } finally {
@@ -80,7 +81,7 @@ export default function CreateApiTokenModal({ open, onClose, onSuccess }: Create
                 message: 'Token copied to clipboard',
                 type: 'success',
             });
-        } catch (err) {
+        } catch {
             addNotification({
                 title: 'Error',
                 message: 'Failed to copy token to clipboard',

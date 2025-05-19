@@ -8,8 +8,7 @@ import {
     Paper,
     Alert,
 } from '@mui/material';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect , useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 
 import { authService, RegisterRequest } from '../services/auth.service';
@@ -42,8 +41,8 @@ export default function Register() {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
         setError('');
         setLoading(true);
 
@@ -56,8 +55,8 @@ export default function Register() {
                 type: 'success',
             });
             navigate('/', { replace: true });
-        } catch (err: any) {
-            setError(err?.response?.data?.message || 'Registration failed. Please try again.');
+        } catch (error: unknown) {
+            setError(error instanceof Error ? error.message : 'Failed to register');
             addNotification({
                 title: 'Error',
                 message: 'Registration failed. Please try again.',

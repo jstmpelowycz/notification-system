@@ -2,7 +2,6 @@ import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@m
 import { useEffect, useState } from 'react';
 
 import { notificationChannelsService, NotificationChannel } from '@/services/notification-channels.service';
-import { notificationProvidersService, NotificationProvider } from '@/services/notification-providers.service';
 
 interface ProviderSelectProps {
     selectedChannelIds: string[];
@@ -11,18 +10,14 @@ interface ProviderSelectProps {
 }
 
 export default function ProviderSelect({ selectedChannelIds, onChannelsChange, disabled = false }: ProviderSelectProps) {
-    const [providers, setProviders] = useState<NotificationProvider[]>([]);
+    const [loading, setLoading] = useState(false);
     const [channels, setChannels] = useState<NotificationChannel[]>([]);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
-                const [providersResponse, channelsResponse] = await Promise.all([
-                    notificationProvidersService.list(),
-                    notificationChannelsService.list(),
-                ]);
-                setProviders(providersResponse.data.providers);
+                const channelsResponse = await notificationChannelsService.list();
                 setChannels(channelsResponse.data.channels);
             } catch (error) {
                 console.error('Failed to fetch data:', error);
@@ -30,7 +25,6 @@ export default function ProviderSelect({ selectedChannelIds, onChannelsChange, d
                 setLoading(false);
             }
         };
-
         fetchData();
     }, []);
 

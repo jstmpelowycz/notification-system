@@ -1,11 +1,10 @@
-import { AppBar, Box, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useLocation } from 'react-router-dom';
+import { AppBar, Box, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { useAuthStore } from '../stores/auth.store';
 import { authService } from '../services/auth.service';
-import { useNotificationStore } from '../stores/notification.store';
+import { useAuthStore } from '../stores/auth.store';
 
 const TITLES: Record<string, string> = {
     '/api-tokens': 'API Tokens',
@@ -14,13 +13,14 @@ const TITLES: Record<string, string> = {
 };
 
 export default function Header() {
-    const location = useLocation();
-    const title = TITLES[location.pathname] || 'Dashboard';
+    const { pathname } = useLocation();
+    const authStore = useAuthStore();
+    const title = TITLES[pathname] || 'Dashboard';
     const user = useAuthStore((state) => state.user);
     const logout = useAuthStore((state) => state.logout);
-    const addNotification = useNotificationStore((state) => state.addNotification);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const navigate = useNavigate();
 
     const handleProfileClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -34,16 +34,11 @@ export default function Header() {
         try {
             setIsLoggingOut(true);
             await authService.logout();
-            handleClose();
             logout();
-        } catch (error) {
-            setIsLoggingOut(false);
-            handleClose();
-            addNotification({
-                title: 'Error',
-                message: 'Failed to logout',
-                type: 'error',
-            });
+            authStore.setUser(null);
+            navigate('/login');
+        } catch {
+            // Handle error silently
         }
     };
 

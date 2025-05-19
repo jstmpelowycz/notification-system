@@ -1,5 +1,6 @@
 import { API_CONFIG } from '@/config/api.config';
 import { BaseApiService } from '@/services/base-api.service';
+
 import { Message } from './messages.service';
 
 export enum NotificationProviderType {
@@ -56,10 +57,6 @@ export class NotificationChannelsService extends BaseApiService {
         return this.api.get<{ channels: NotificationChannel[] }>(API_CONFIG.ENDPOINTS.NOTIFICATION_CHANNELS.LIST);
     }
 
-    async findById(id: string) {
-        return this.api.get<{ channel: NotificationChannel | null }>(API_CONFIG.ENDPOINTS.NOTIFICATION_CHANNELS.GET(id));
-    }
-
     async create(data: CreateChannelRequest) {
         return this.api.post<{ channel: NotificationChannel }>(API_CONFIG.ENDPOINTS.NOTIFICATION_CHANNELS.CREATE, data);
     }
@@ -69,4 +66,4 @@ export class NotificationChannelsService extends BaseApiService {
     }
 }
 
-export const notificationChannelsService = new NotificationChannelsService(); 
+export const notificationChannelsService = new NotificationChannelsService();

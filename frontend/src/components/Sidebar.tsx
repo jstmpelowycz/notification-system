@@ -1,7 +1,7 @@
-import { Box, List, ListItemButton, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material';
 import KeyIcon from '@mui/icons-material/Key';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import MessageIcon from '@mui/icons-material/Message';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Box, List, ListItemButton, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const MENU_ITEMS = [

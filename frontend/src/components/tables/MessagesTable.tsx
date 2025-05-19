@@ -1,14 +1,15 @@
-import { Box, Button, IconButton, Menu, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import SendIcon from '@mui/icons-material/Send';
 import HistoryIcon from '@mui/icons-material/History';
-import { useEffect, useState } from 'react';
+import SendIcon from '@mui/icons-material/Send';
+import { Box, Button, IconButton, Menu, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, Typography } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
 
-import EmptyState from '../EmptyState';
-import LoadingState from '../LoadingState';
-import MessageDrawer from '../drawers/MessageDrawer';
 import { messagesService, Message, MessageStatus, MessageRevision, MessageRevisionStatus } from '@/services/messages.service';
 import { useNotificationStore } from '@/stores/notification.store';
+
+import MessageDrawer from '../drawers/MessageDrawer';
+import EmptyState from '../EmptyState';
+import LoadingState from '../LoadingState';
 
 export default function MessagesTable() {
     const [messages, setMessages] = useState<Message[]>([]);
@@ -21,25 +22,25 @@ export default function MessagesTable() {
     const [selectedMessageForRevisions, setSelectedMessageForRevisions] = useState<Message | null>(null);
     const addNotification = useNotificationStore((state) => state.addNotification);
 
-    const fetchMessages = async () => {
+    const fetchMessages = useCallback(async () => {
+        setLoading(true);
         try {
             const response = await messagesService.list();
             setMessages(response.data.messages);
         } catch (error) {
-            console.error('Failed to fetch messages:', error);
             addNotification({
                 title: 'Error',
-                message: 'Failed to fetch messages',
+                message: error instanceof Error ? error.message : 'Failed to fetch messages',
                 type: 'error',
             });
         } finally {
             setLoading(false);
         }
-    };
+    }, [addNotification]);
 
     useEffect(() => {
         fetchMessages();
-    }, []);
+    }, [fetchMessages]);
 
     const handleRowClick = (message: Message) => {
         setSelectedMessage(message);
@@ -69,12 +70,7 @@ export default function MessagesTable() {
 
         try {
             if (selectedMessage) {
-                await messagesService.update(selectedMessage.id, {
-                    description: data.description,
-                    content: data.content,
-                    channelIds: data.channelIds,
-                    status: data.status,
-                });
+                await messagesService.update(selectedMessage.id, data);
                 addNotification({
                     title: 'Success',
                     message: 'Message updated successfully',
@@ -90,8 +86,8 @@ export default function MessagesTable() {
             }
             await fetchMessages();
             handleDrawerClose();
-        } catch (err: any) {
-            setError(err?.response?.data?.message || 'Failed to save message');
+        } catch (error: unknown) {
+            setError(error instanceof Error ? error.message : 'Failed to save message');
             addNotification({
                 title: 'Error',
                 message: 'Failed to save message',
@@ -265,9 +261,9 @@ export default function MessagesTable() {
                         key={revision.id}
                         onClick={() => handleRevisionActivate(revision)}
                         disabled={revision.status === MessageRevisionStatus.ACTIVE}
-                        sx={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
                             justifyContent: 'space-between',
                             py: 1,
                             px: 2,
@@ -280,8 +276,8 @@ export default function MessagesTable() {
                         }}
                     >
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                            <Typography variant="body2" sx={{ 
-                                fontWeight: revision.status === MessageRevisionStatus.LOCKED ? 500 : 400 
+                            <Typography variant="body2" sx={{
+                                fontWeight: revision.status === MessageRevisionStatus.LOCKED ? 500 : 400
                             }}>
                                 #{revision.displayId}
                             </Typography>

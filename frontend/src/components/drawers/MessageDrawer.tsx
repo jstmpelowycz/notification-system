@@ -1,9 +1,10 @@
-import { Alert, Box, Button, CircularProgress, Drawer, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { Alert, Box, Button, CircularProgress, Drawer, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-import ProviderSelect from '../selects/ProviderSelect';
 import { Message, MessageStatus } from '@/services/messages.service';
+
+import ProviderSelect from '../selects/ProviderSelect';
 
 interface MessageDrawerProps {
     open: boolean;

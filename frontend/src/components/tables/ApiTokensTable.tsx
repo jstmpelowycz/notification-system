@@ -1,13 +1,14 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Chip, Button, Box } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import { useEffect, useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Chip, Button, Box } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
+
+import { apiTokensService, ApiToken } from '@/services/api-tokens.service';
+import { useNotificationStore } from '@/stores/notification.store';
 
 import EmptyState from '../EmptyState';
 import LoadingState from '../LoadingState';
 import CreateApiTokenModal from '../modals/CreateApiTokenModal';
-import { apiTokensService, ApiToken } from '@/services/api-tokens.service';
-import { useNotificationStore } from '@/stores/notification.store';
 
 export default function ApiTokensTable() {
     const [tokens, setTokens] = useState<ApiToken[]>([]);
@@ -16,25 +17,25 @@ export default function ApiTokensTable() {
     const [revokingTokenIds, setRevokingTokenIds] = useState<Set<string>>(new Set());
     const addNotification = useNotificationStore((state) => state.addNotification);
 
-    const fetchTokens = async () => {
+    const fetchTokens = useCallback(async () => {
+        setLoading(true);
         try {
             const response = await apiTokensService.list();
             setTokens(response.data.tokens);
-        } catch (error) {
-            console.error('Failed to fetch API tokens:', error);
+        } catch (error: unknown) {
             addNotification({
                 title: 'Error',
-                message: 'Failed to fetch API tokens',
-                type: 'error',
+                message: error instanceof Error ? error.message : 'Failed to fetch API tokens',
+                type: 'error'
             });
         } finally {
             setLoading(false);
         }
-    };
+    }, [addNotification]);
 
     useEffect(() => {
         fetchTokens();
-    }, []);
+    }, [fetchTokens]);
 
     const handleRevoke = async (id: string) => {
         setRevokingTokenIds((prev) => new Set(prev).add(id));
@@ -108,29 +109,29 @@ export default function ApiTokensTable() {
                                     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                                 })
                                 .map((token) => (
-                                <TableRow key={token.id}>
-                                    <TableCell>{token.prefix}</TableCell>
-                                    <TableCell>{token.description || '-'}</TableCell>
-                                    <TableCell>{new Date(token.createdAt).toLocaleString()}</TableCell>
-                                    <TableCell>
-                                        <Chip
-                                            label={token.revokedAt ? 'Revoked' : 'Active'}
-                                            color={token.revokedAt ? 'default' : 'success'}
-                                            size="small"
-                                        />
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <IconButton
-                                            size="small"
-                                            color="error"
-                                            disabled={!!token.revokedAt || revokingTokenIds.has(token.id)}
-                                            onClick={() => handleRevoke(token.id)}
-                                        >
-                                            <DeleteIcon fontSize="small" />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                                    <TableRow key={token.id}>
+                                        <TableCell>{token.prefix}</TableCell>
+                                        <TableCell>{token.description || '-'}</TableCell>
+                                        <TableCell>{new Date(token.createdAt).toLocaleString()}</TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={token.revokedAt ? 'Revoked' : 'Active'}
+                                                color={token.revokedAt ? 'default' : 'success'}
+                                                size="small"
+                                            />
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <IconButton
+                                                size="small"
+                                                color="error"
+                                                disabled={!!token.revokedAt || revokingTokenIds.has(token.id)}
+                                                onClick={() => handleRevoke(token.id)}
+                                            >
+                                                <DeleteIcon fontSize="small" />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
                         </TableBody>
                     </Table>
                 </TableContainer>

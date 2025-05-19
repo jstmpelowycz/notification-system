@@ -1,7 +1,6 @@
 import { Alert, Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-import ProviderSelect from './ProviderSelect';
 import { 
     NotificationChannel, 
     NotificationProvider, 
@@ -10,6 +9,8 @@ import {
 } from '@/services/notification-channels.service';
 import { notificationProvidersService } from '@/services/notification-providers.service';
 import { useNotificationStore } from '@/stores/notification.store';
+
+import ProviderSelect from './ProviderSelect';
 
 interface ChannelFormProps {
     channel?: NotificationChannel;

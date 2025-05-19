@@ -1,10 +1,7 @@
-import { Box, Button, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { useEffect, useState } from 'react';
+import { Box, Button, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
 
-import EmptyState from '../EmptyState';
-import LoadingState from '../LoadingState';
-import ChannelDrawer from '../drawers/ChannelDrawer';
 import { 
     notificationChannelsService, 
     NotificationChannel, 
@@ -13,6 +10,10 @@ import {
     UpdateChannelRequest 
 } from '@/services/notification-channels.service';
 import { useNotificationStore } from '@/stores/notification.store';
+
+import ChannelDrawer from '../drawers/ChannelDrawer';
+import EmptyState from '../EmptyState';
+import LoadingState from '../LoadingState';
 
 export default function ChannelsTable() {
     const [channels, setChannels] = useState<NotificationChannel[]>([]);
@@ -23,25 +24,25 @@ export default function ChannelsTable() {
     const [error, setError] = useState<string | null>(null);
     const addNotification = useNotificationStore((state) => state.addNotification);
 
-    const fetchChannels = async () => {
+    const fetchChannels = useCallback(async () => {
+        setLoading(true);
         try {
             const response = await notificationChannelsService.list();
             setChannels(response.data.channels);
-        } catch (error) {
-            console.error('Failed to fetch channels:', error);
+        } catch (error: unknown) {
             addNotification({
                 title: 'Error',
-                message: 'Failed to fetch channels',
-                type: 'error',
+                message: error instanceof Error ? error.message : 'Failed to fetch channels',
+                type: 'error'
             });
         } finally {
             setLoading(false);
         }
-    };
+    }, [addNotification]);
 
     useEffect(() => {
         fetchChannels();
-    }, []);
+    }, [fetchChannels]);
 
     const handleRowClick = (channel: NotificationChannel) => {
         setSelectedChannel(channel);
@@ -89,8 +90,8 @@ export default function ChannelsTable() {
             }
             await fetchChannels();
             handleDrawerClose();
-        } catch (err: any) {
-            setError(err?.response?.data?.message || 'Failed to save channel');
+        } catch (error: unknown) {
+            setError(error instanceof Error ? error.message : 'Failed to save channel');
             addNotification({
                 title: 'Error',
                 message: 'Failed to save channel',

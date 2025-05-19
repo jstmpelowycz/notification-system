@@ -1,8 +1,9 @@
-import { Box, Drawer, IconButton, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { Box, Drawer, IconButton, Typography } from '@mui/material';
+
+import { NotificationChannel, NotificationChannelStatus } from '@/services/notification-channels.service';
 
 import ChannelForm from '../forms/ChannelForm';
-import { NotificationChannel, NotificationChannelStatus } from '@/services/notification-channels.service';
 
 interface ChannelDrawerProps {
     open: boolean;

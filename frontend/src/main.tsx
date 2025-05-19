@@ -1,9 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
+
 import App from './App.tsx';
 import { authService } from './services/auth.service';
 import { useAuthStore } from './stores/auth.store';
+import './index.css';
 
 async function initAuth() {
     try {
@@ -13,7 +14,7 @@ async function initAuth() {
         } else {
             useAuthStore.getState().setUserFromBackend(null);
         }
-    } catch (e) {
+    } catch {
         useAuthStore.getState().setUserFromBackend(null);
     }
 }
