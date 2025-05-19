@@ -37,9 +37,6 @@ export class ApiTokensService {
 
     async findAll(): Promise<ApiToken[]> {
         return this.apiTokensRepository.find({
-            where: {
-                revokedAt: IsNull(),
-            },
             order: {
                 createdAt: 'desc',
             },

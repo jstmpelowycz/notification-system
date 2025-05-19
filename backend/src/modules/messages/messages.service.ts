@@ -33,7 +33,7 @@ export class MessagesService {
                 }),
                 ...(status && { status }),
             },
-            relations: ['currentRevision', 'channels'],
+            relations: ['currentRevision', 'channels', 'currentRevision.content'],
         });
     }
 

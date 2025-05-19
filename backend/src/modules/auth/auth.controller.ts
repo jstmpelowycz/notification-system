@@ -1,5 +1,5 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Res } from '@nestjs/common';
-import { Response } from 'express';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Res, UseGuards, Req } from '@nestjs/common';
+import { Response, Request } from 'express';
 
 import { COOKIE_KEYS } from '@/constants/cookie-keys';
 import { CreateUserRequestDto, CreateUserResponseDto } from '@/modules/users/dto/create-user.dto';
@@ -7,6 +7,7 @@ import { CreateUserRequestDto, CreateUserResponseDto } from '@/modules/users/dto
 import { AuthService } from './auth.service';
 import { JWT_RESPONSE_COOKIE_OPTIONS } from './constants/jwt-cookie-options';
 import { LoginUserRequestDto, LoginUserResponseDto } from './dto/login-user.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -57,5 +58,12 @@ export class AuthController {
     @HttpCode(HttpStatus.NO_CONTENT)
     logout(@Res({ passthrough: true }) response: Response): void {
         response.clearCookie(COOKIE_KEYS.JWT);
+    }
+
+    @Get('me')
+    @UseGuards(JwtAuthGuard)
+    @HttpCode(HttpStatus.OK)
+    me(@Req() req: Request) {
+        return { user: req.user };
     }
 }
