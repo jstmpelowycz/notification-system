@@ -12,5 +12,6 @@ import { MSTeamsDispatchStrategy } from './strategies/ms-teams-dispatch.strategy
     imports: [MessagesModule],
     controllers: [DispatchController],
     providers: [DispatchService, DispatchStrategyFactory, DiscordDispatchStrategy, MSTeamsDispatchStrategy],
+    exports: [DispatchService],
 })
 export class DispatchModule {}

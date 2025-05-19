@@ -2,7 +2,7 @@ import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 import { Message, MessageStatus } from '@/entities/message';
 
-export class FindByQueryMessagesRequestDto {
+export class FindManyMessagesRequestDto {
     @IsString()
     @IsOptional()
     search?: string;
@@ -12,7 +12,7 @@ export class FindByQueryMessagesRequestDto {
     status?: MessageStatus;
 }
 
-export class FindAllMessagesResponseDto {
+export class FindManyMessagesResponseDto {
     messages: Message[];
     total: number;
 }

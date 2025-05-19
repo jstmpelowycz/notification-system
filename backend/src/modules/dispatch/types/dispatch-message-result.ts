@@ -1,13 +1,20 @@
-export interface BaseDeliveryStats {
+export interface DeliveryStats {
     successfullySent: number;
     failedToSend: number;
 }
 
-interface CompleteDeliveryStats extends BaseDeliveryStats {
-    totallyProcessed: number;
+export interface ChannelDeliveryResult {
+    channelName: string;
+    providerType: string;
+    status: 'success' | 'failure';
+    error?: string;
 }
 
 export interface DispatchMessageResult {
     messageId: string;
-    stats: CompleteDeliveryStats;
+    messageSlug: string;
+    status: 'success' | 'failure';
+    reason?: string;
+    stats: DeliveryStats;
+    channelResults: ChannelDeliveryResult[];
 }

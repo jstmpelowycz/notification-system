@@ -8,13 +8,9 @@ import { MessageRevisionsService } from '@/modules/message-revisions/message-rev
 
 import { MESSAGE_ERROR_MESSAGES } from './constants/error-messages';
 import { CreateMessageRequestDto } from './dto/create-message.dto';
-import { FindByQueryMessagesRequestDto } from './dto/find-all-messages.dto';
+import { FindManyMessagesRequestDto } from './dto/find-many-messages.dto';
 import { ManageRevisionRequestDto } from './dto/manage-revision.dto';
 import { UpdateMessageRequestDto } from './dto/update-message.dto';
-
-interface GetMessageOptions {
-    status?: MessageStatus;
-}
 
 @Injectable()
 export class MessagesService {
@@ -27,7 +23,7 @@ export class MessagesService {
         private readonly dataSource: DataSource
     ) {}
 
-    async findByQuery(query: FindByQueryMessagesRequestDto): Promise<[Message[], number]> {
+    async findByQuery(query: FindManyMessagesRequestDto): Promise<[Message[], number]> {
         const { search, status } = query;
 
         return this.messagesRepository.findAndCount({
@@ -41,19 +37,27 @@ export class MessagesService {
         });
     }
 
-    async getById(id: string, options?: GetMessageOptions): Promise<Message> {
+    async findBySlug(slug: string): Promise<Message | null> {
+        return this.messagesRepository.findOne({
+            where: { slug },
+            relations: ['currentRevision', 'channels', 'currentRevision.content', 'channels.provider'],
+        });
+    }
+
+    async findById(id: string): Promise<Message | null> {
         const message = await this.messagesRepository.findOne({
-            where: {
-                id,
-                ...(options?.status && {
-                    status: options.status,
-                }),
-            },
+            where: { id },
             relations: ['currentRevision', 'channels', 'currentRevision.content', 'channels.provider'],
         });
 
+        return message;
+    }
+
+    async getById(id: string): Promise<Message> {
+        const message = await this.findById(id);
+
         if (!message) {
-            throw new Error(MESSAGE_ERROR_MESSAGES.CHANNEL_NOT_FOUND);
+            throw new Error(MESSAGE_ERROR_MESSAGES.MESSAGE_NOT_FOUND);
         }
 
         return message;

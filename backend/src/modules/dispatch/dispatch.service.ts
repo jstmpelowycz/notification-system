@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
 import { Message, MessageStatus } from '@/entities/message';
-import { NotificationChannel } from '@/entities/notification-channel';
+import { NotificationChannel, NotificationChannelStatus } from '@/entities/notification-channel';
 import { MessagesService } from '@/modules/messages/messages.service';
 
-import { DISPATCH_ERROR_MESSAGES } from './constants/error-messages';
+import { DispatchResultBuilder } from './builders/dispatch-result.builder';
 import { DispatchStrategyFactory } from './factories/dispatch-strategy.factory';
 import { MessageContent } from './strategies/dispatch-strategy.interface';
-import { BaseDeliveryStats, DispatchMessageResult } from './types/dispatch-message-result';
+import { ChannelDeliveryResult, DispatchMessageResult } from './types/dispatch-message-result';
 
 @Injectable()
 export class DispatchService {
@@ -17,25 +17,55 @@ export class DispatchService {
     ) {}
 
     async dispatchMessage(messageId: string): Promise<DispatchMessageResult> {
-        const message = await this.messagesService.getById(messageId, {
-            status: MessageStatus.ACTIVE,
-        });
+        const message = await this.messagesService.findById(messageId);
 
-        if (!message.channels.length) {
-            throw new Error(DISPATCH_ERROR_MESSAGES.NO_CHANNELS);
+        if (!message) {
+            return DispatchResultBuilder.createMessageNotFound(messageId);
         }
 
-        const results = await Promise.allSettled(
-            message.channels.map(channel => this.dispatchToChannel(message, channel))
-        );
+        if (message.status !== MessageStatus.ACTIVE) {
+            return DispatchResultBuilder.createInactiveMessage(message);
+        }
 
-        return {
-            messageId: message.id,
-            stats: {
-                totallyProcessed: message.channels.length,
-                ...this.getBaseDeliveryStats(results),
-            },
-        };
+        if (!message.channels.length) {
+            return DispatchResultBuilder.createNoChannels(message);
+        }
+
+        const activeChannels = message.channels.filter(channel => channel.status === NotificationChannelStatus.ACTIVE);
+
+        if (!activeChannels.length) {
+            return DispatchResultBuilder.createAllChannelsInactive(message);
+        }
+
+        const channelResults = await this.dispatchToChannels(message, activeChannels);
+
+        return new DispatchResultBuilder(message.id).withMessage(message).withChannelResults(channelResults).build();
+    }
+
+    private async dispatchToChannels(
+        message: Message,
+        channels: NotificationChannel[]
+    ): Promise<ChannelDeliveryResult[]> {
+        return Promise.all(
+            channels.map(async channel => {
+                try {
+                    await this.dispatchToChannel(message, channel);
+
+                    return {
+                        channelName: channel.name,
+                        providerType: channel.provider.type,
+                        status: 'success',
+                    };
+                } catch (error) {
+                    return {
+                        channelName: channel.name,
+                        providerType: channel.provider.type,
+                        status: 'failure',
+                        error: error instanceof Error ? error.message : 'Unknown error',
+                    };
+                }
+            })
+        );
     }
 
     private async dispatchToChannel(message: Message, channel: NotificationChannel): Promise<void> {
@@ -43,12 +73,5 @@ export class DispatchService {
         const strategy = this.dispatchStrategyFactory.getStrategy(channel.provider.type);
 
         await strategy.dispatch(channel.config.webhookUrl as string, content);
-    }
-
-    private getBaseDeliveryStats(results: PromiseSettledResult<void>[]): BaseDeliveryStats {
-        return {
-            successfullySent: results.filter(result => result.status === 'fulfilled').length,
-            failedToSend: results.filter(result => result.status === 'rejected').length,
-        };
     }
 }
