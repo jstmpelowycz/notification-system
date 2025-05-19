@@ -1,6 +1,6 @@
-import { IsArray, IsNotEmpty, IsObject, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsEnum, IsNotEmpty, IsObject, IsOptional, IsString, IsUUID } from 'class-validator';
 
-import { Message } from '@/entities/message';
+import { Message, MessageStatus } from '@/entities/message';
 
 export class UpdateMessageRequestDto {
     @IsString()
@@ -16,6 +16,10 @@ export class UpdateMessageRequestDto {
     @IsUUID('4', { each: true })
     @IsOptional()
     channelIds?: string[];
+
+    @IsEnum(MessageStatus)
+    @IsOptional()
+    status?: MessageStatus;
 }
 
 export class UpdateMessageResponseDto {

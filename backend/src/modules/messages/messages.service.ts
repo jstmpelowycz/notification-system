@@ -11,6 +11,8 @@ import { CreateMessageRequestDto } from './dto/create-message.dto';
 import { FindManyMessagesRequestDto } from './dto/find-many-messages.dto';
 import { ManageRevisionRequestDto } from './dto/manage-revision.dto';
 import { UpdateMessageRequestDto } from './dto/update-message.dto';
+import { areMessageChannelIdsEqual } from './utils/are-message-channel-ids-equal';
+import { areMessageContentsEqual } from './utils/are-message-contents-equal';
 
 @Injectable()
 export class MessagesService {
@@ -33,7 +35,13 @@ export class MessagesService {
                 }),
                 ...(status && { status }),
             },
-            relations: ['currentRevision', 'channels', 'currentRevision.content'],
+            relations: ['currentRevision', 'channels', 'currentRevision.content', 'revisions', 'revisions.content'],
+            order: {
+                createdAt: 'DESC',
+                revisions: {
+                    displayId: 'DESC',
+                },
+            },
         });
     }
 
@@ -114,23 +122,28 @@ export class MessagesService {
     }
 
     async update(id: string, dto: UpdateMessageRequestDto): Promise<Message> {
-        const { description, content, channelIds } = dto;
+        const { description, content, channelIds, status } = dto;
 
         let shouldSaveMessage = false;
 
         const message = await this.getById(id);
 
-        if (description !== undefined) {
+        if (status !== undefined && status !== message.status) {
+            message.status = status;
+            shouldSaveMessage = true;
+        }
+
+        if (description !== undefined && description !== message.description) {
             message.description = description;
             shouldSaveMessage = true;
         }
 
-        if (channelIds !== undefined) {
+        if (channelIds !== undefined && !areMessageChannelIdsEqual(channelIds, message)) {
             await this.updateChannels(message, channelIds);
             shouldSaveMessage = true;
         }
 
-        if (content !== undefined) {
+        if (content !== undefined && !areMessageContentsEqual(content, message)) {
             await this.updateContent(message, content);
             shouldSaveMessage = true;
         }
@@ -138,14 +151,6 @@ export class MessagesService {
         if (!shouldSaveMessage) {
             return message;
         }
-
-        return this.messagesRepository.save(message);
-    }
-
-    async updateStatus(id: string, status: MessageStatus): Promise<Message> {
-        const message = await this.getById(id);
-
-        message.status = status;
 
         return this.messagesRepository.save(message);
     }

@@ -1,39 +1,63 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-function App() {
-    const [count, setCount] = useState(0);
+import Layout from './components/Layout';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ProtectedRoute from './components/ProtectedRoute';
 
+const theme = createTheme({
+    palette: {
+        mode: 'light',
+        background: {
+            default: '#f5f5f5',
+        },
+        primary: {
+            main: '#1976d2',
+        },
+    },
+    components: {
+        MuiTableCell: {
+            styleOverrides: {
+                root: {
+                    padding: '12px 16px',
+                },
+                head: {
+                    fontWeight: 600,
+                    backgroundColor: '#fafafa',
+                },
+            },
+        },
+        MuiTableRow: {
+            styleOverrides: {
+                root: {
+                    '&:last-child td': {
+                        borderBottom: 0,
+                    },
+                },
+            },
+        },
+    },
+});
+
+export default function App() {
     return (
-        <>
-            <div>
-                <a href="https://vite.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img
-                        src={reactLogo}
-                        className="logo react"
-                        alt="React logo"
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Router>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route
+                        path="/*"
+                        element={
+                            <ProtectedRoute>
+                                <Layout />
+                            </ProtectedRoute>
+                        }
                     />
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
-        </>
+                </Routes>
+            </Router>
+        </ThemeProvider>
     );
 }
-
-export default App;

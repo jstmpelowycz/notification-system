@@ -4,7 +4,6 @@ import { CreateMessageRequestDto, CreateMessageResponseDto } from './dto/create-
 import { FindManyMessagesResponseDto, FindManyMessagesRequestDto } from './dto/find-many-messages.dto';
 import { FindMessageResponseDto } from './dto/find-message.dto';
 import { ManageRevisionRequestDto, ManageRevisionResponseDto } from './dto/manage-revision.dto';
-import { UpdateMessageStatusRequestDto, UpdateMessageStatusResponseDto } from './dto/update-message-status.dto';
 import { UpdateMessageRequestDto, UpdateMessageResponseDto } from './dto/update-message.dto';
 import { MessagesService } from './messages.service';
 
@@ -39,16 +38,6 @@ export class MessagesController {
         @Body() dto: UpdateMessageRequestDto
     ): Promise<UpdateMessageResponseDto> {
         const message = await this.messagesService.update(id, dto);
-
-        return { message };
-    }
-
-    @Patch(':id/status')
-    async updateStatus(
-        @Param('id', ParseUUIDPipe) id: string,
-        @Body() dto: UpdateMessageStatusRequestDto
-    ): Promise<UpdateMessageStatusResponseDto> {
-        const message = await this.messagesService.updateStatus(id, dto.status);
 
         return { message };
     }

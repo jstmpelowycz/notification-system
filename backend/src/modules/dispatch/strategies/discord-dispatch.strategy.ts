@@ -10,10 +10,10 @@ export class DiscordDispatchStrategy implements DispatchStrategy {
 
         await webhook.send({
             username: 'Notification System',
-            content: content.body,
             embeds: [
                 {
                     title: content.title,
+                    description: content.body,
                 },
             ],
         });
