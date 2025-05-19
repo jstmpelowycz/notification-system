@@ -42,7 +42,6 @@ export default function CreateApiTokenModal({ open, onClose, onSuccess }: Create
                 message: 'API token created successfully',
                 type: 'success',
             });
-            onSuccess();
         } catch (error: unknown) {
             setError(error instanceof Error ? error.message : 'Failed to create API token');
             addNotification({

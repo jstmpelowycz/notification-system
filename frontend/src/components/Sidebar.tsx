@@ -1,7 +1,7 @@
 import KeyIcon from '@mui/icons-material/Key';
 import MessageIcon from '@mui/icons-material/Message';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { Box, List, ListItemButton, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material';
+import { Box, Divider, List, ListItemButton, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const MENU_ITEMS = [
@@ -15,10 +15,10 @@ export default function Sidebar() {
     const location = useLocation();
 
     return (
-        <Paper 
-            elevation={0} 
-            sx={{ 
-                width: 280, 
+        <Paper
+            elevation={0}
+            sx={{
+                width: 280,
                 height: '100vh',
                 bgcolor: '#1e2532',
                 color: 'white',
@@ -29,7 +29,7 @@ export default function Sidebar() {
             }}
         >
             <Box sx={{ p: 2, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                <Typography variant="subtitle2" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+                <Typography variant="subtitle2" sx={{ color: 'rgba(255,255,255,0.7)', mb: '8px' }}>
                     NOTIFICATION SYSTEM
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)' }}>
@@ -39,7 +39,7 @@ export default function Sidebar() {
 
             <List component="nav" sx={{ pt: 0 }}>
                 {MENU_ITEMS.map(({ path, label, icon: Icon }) => (
-                    <ListItemButton 
+                    <ListItemButton
                         key={path}
                         selected={location.pathname === path}
                         onClick={() => navigate(path)}
@@ -55,7 +55,7 @@ export default function Sidebar() {
                         <ListItemIcon>
                             <Icon sx={{ color: 'rgba(255,255,255,0.7)' }} />
                         </ListItemIcon>
-                        <ListItemText 
+                        <ListItemText
                             primary={label}
                             sx={{ '& .MuiListItemText-primary': { color: 'rgba(255,255,255,0.9)' } }}
                         />
@@ -64,4 +64,4 @@ export default function Sidebar() {
             </List>
         </Paper>
     );
-} 
+}

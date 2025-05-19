@@ -141,7 +141,6 @@ export default function ApiTokensTable() {
                 open={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSuccess={() => {
-                    setIsModalOpen(false);
                     fetchTokens();
                 }}
             />
