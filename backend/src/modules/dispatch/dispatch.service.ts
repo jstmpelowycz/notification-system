@@ -9,6 +9,9 @@ import { DispatchStrategyFactory } from './factories/dispatch-strategy.factory';
 import { MessageContent } from './strategies/dispatch-strategy.interface';
 import { ChannelDeliveryResult, DispatchMessageResult } from './types/dispatch-message-result';
 
+const RETRY_ATTEMPTS = 2;
+const RETRY_DELAY_MS = 1000;
+
 @Injectable()
 export class DispatchService {
     constructor(
@@ -49,7 +52,7 @@ export class DispatchService {
         return Promise.all(
             channels.map(async channel => {
                 try {
-                    await this.dispatchToChannel(message, channel);
+                    await this.dispatchToChannelWithRetry(message, channel);
 
                     return {
                         channelName: channel.name,
@@ -62,16 +65,34 @@ export class DispatchService {
                         providerType: channel.provider.type,
                         status: 'failure',
                         error: error instanceof Error ? error.message : 'Unknown error',
+                        retriesAttempted: RETRY_ATTEMPTS,
                     };
                 }
             })
         );
     }
 
-    private async dispatchToChannel(message: Message, channel: NotificationChannel): Promise<void> {
-        const content = JSON.parse(message.currentRevision.content.content) as MessageContent;
-        const strategy = this.dispatchStrategyFactory.getStrategy(channel.provider.type);
+    private async dispatchToChannelWithRetry(message: Message, channel: NotificationChannel): Promise<void> {
+        let lastError: Error | undefined;
 
-        await strategy.dispatch(channel.config.webhookUrl as string, content);
+        for (let attempt = 0; attempt <= RETRY_ATTEMPTS; attempt++) {
+            try {
+                const content = JSON.parse(message.currentRevision.content.content) as MessageContent;
+                const strategy = this.dispatchStrategyFactory.getStrategy(channel.provider.type);
+
+                await strategy.dispatch(channel.config.webhookUrl as string, content);
+
+                return;
+            } catch (error) {
+                lastError = error instanceof Error ? error : new Error('Unknown error');
+
+                if (attempt < RETRY_ATTEMPTS) {
+                    await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
+                    continue;
+                }
+            }
+        }
+
+        throw lastError;
     }
 }
